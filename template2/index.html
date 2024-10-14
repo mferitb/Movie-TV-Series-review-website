@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeflex - Movie Rating Site</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">DFT Video
+            <a href="#">Movies</a>
+            <a href="#">TV Shows</a>
+        </div>
+        <nav class="nav">
+            <a href="#">Log in</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="movie-grid">
+            <!-- Movie cards will be dynamically inserted here -->
+        </div>
+    </main>
+    <div id="review-page">
+        <div class="review-content">
+            <span class="close-button">&times;</span>
+            <h2 id="review-movie-title"></h2>
+            <div id="review-movie-rating"></div>
+            <form class="review-form">
+                <h3>Rate this movie:</h3>
+                <div class="star-rating">
+                    <span class="star" data-rating="1">&#9733;</span>
+                    <span class="star" data-rating="2">&#9733;</span>
+                    <span class="star" data-rating="3">&#9733;</span>
+                    <span class="star" data-rating="4">&#9733;</span>
+                    <span class="star" data-rating="5">&#9733;</span>
+                </div>
+                <h3>Write a review:</h3>
+                <textarea id="review-text" placeholder="Write your review here..."></textarea>
+                <button type="submit">Submit Review</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
