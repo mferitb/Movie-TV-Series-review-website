@@ -17,7 +17,7 @@ const movies = [
 ];
 
 const tvShows = [
-    { title: "Breaking Bad", rating: 4.9, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Breaking Bad", rating: 4.9, image: "/images.jpg?height=100&width=100" },
     { title: "Game of Thrones", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
     { title: "Stranger Things", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
     { title: "The Crown", rating: 4.4, image: "/placeholder.svg?height=300&width=200" },
@@ -34,116 +34,77 @@ const tvShows = [
     { title: "Narcos", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
 ];
 
-const movieGrid = document.querySelector('.movie-grid');
-const tvShowGrid = document.querySelector('.tvshow-grid');
-const reviewPage = document.getElementById('review-page');
-const closeButton = document.querySelector('.close-button');
-const reviewTitle = document.getElementById('review-title');
-const reviewRating = document.getElementById('review-rating');
-const reviewForm = document.querySelector('.review-form');
-const starRating = document.querySelector('.star-rating');
-let currentRating = 0;
+const movieGrid = document.querySelector(".movie-grid");
+const tvShowGrid = document.querySelector(".tvshow-grid");
+const loginLink = document.getElementById("login-link");
+const registerLink = document.getElementById("register-link");
+const moviesLink = document.getElementById("movies-link");
+const tvShowsLink = document.getElementById("tvshows-link");
+const reviewPage = document.getElementById("review-page");
+const loginPage = document.getElementById("login-page");
+const registerPage = document.getElementById("register-page");
+const reviewTitle = document.getElementById("review-title");
+const reviewRating = document.getElementById("review-rating");
 
-function createCard(item, type) {
-    const card = document.createElement('div');
-    card.className = type === 'movie' ? 'movie-card' : 'tvshow-card';
-    card.innerHTML = `
-        <img src="${item.image}" alt="${item.title}">
-        <div class="${type}-info">
-            <div class="${type}-title">${item.title}</div>
-            <div class="${type}-rating">★ ${item.rating.toFixed(1)}</div>
-        </div>
-    `;
-    card.addEventListener('click', () => openReviewPage(item));
-    return card;
-}
-
-function renderCards(items, grid, type) {
-    grid.innerHTML = '';
-    items.forEach(item => {
-        const card = createCard(item, type);
-        grid.appendChild(card);
+function displayMovies() {
+    movieGrid.innerHTML = "";
+    movies.forEach((movie) => {
+        const movieCard = document.createElement("div");
+        movieCard.classList.add("movie-card");
+        movieCard.innerHTML = `
+            <img src="${movie.image}" alt="${movie.title}">
+            <div class="movie-info">
+                <h3 class="movie-title">${movie.title}</h3>
+                <p class="movie-rating">Rating: ${movie.rating}</p>
+            </div>
+        `;
+        movieCard.addEventListener("click", () => openReviewPage(movie.title, movie.rating));
+        movieGrid.appendChild(movieCard);
     });
 }
 
-renderCards(movies, movieGrid, 'movie');
-renderCards(tvShows, tvShowGrid, 'tvshow');
-
-document.getElementById('movies-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    movieGrid.style.display = 'grid';
-    tvShowGrid.style.display = 'none';
-});
-
-document.getElementById('tvshows-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    movieGrid.style.display = 'none';
-    tvShowGrid.style.display = 'grid';
-});
-
-function openReviewPage(item) {
-    reviewTitle.textContent = item.title;
-    reviewRating.textContent = `Current Rating: ★ ${item.rating.toFixed(1)}`;
-    reviewPage.style.display = 'block';
-    resetStarRating();
-}
-
-closeButton.addEventListener('click', () => {
-    reviewPage.style.display = 'none';
-});
-
-starRating.addEventListener('click', (e) => {
-    if (e.target.classList.contains('star')) {
-        currentRating = parseInt(e.target.dataset.rating);
-        updateStarRating();
-    }
-});
-
-function updateStarRating() {
-    const stars = starRating.querySelectorAll('.star');
-    stars.forEach((star, index) => {
-        if (index < currentRating) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
+function displayTVShows() {
+    tvShowGrid.innerHTML = "";
+    tvShows.forEach((tvShow) => {
+        const tvShowCard = document.createElement("div");
+        tvShowCard.classList.add("tvshow-card");
+        tvShowCard.innerHTML = `
+            <img src="${tvShow.image}" alt="${tvShow.title}">
+            <div class="tvshow-info">
+                <h3 class="tvshow-title">${tvShow.title}</h3>
+                <p class="tvshow-rating">Rating: ${tvShow.rating}</p>
+            </div>
+        `;
+        tvShowCard.addEventListener("click", () => openReviewPage(tvShow.title, tvShow.rating));
+        tvShowGrid.appendChild(tvShowCard);
     });
 }
 
-function resetStarRating() {
-    currentRating = 0;
-    updateStarRating();
+function openReviewPage(title, rating) {
+    reviewTitle.textContent = title;
+    reviewRating.innerHTML = `Current Rating: ${rating}`;
+    reviewPage.style.display = "block";
 }
 
-starRating.addEventListener('mouseover', (e) => {
-    if (e.target.classList.contains('star')) {
-        const hoverRating = parseInt(e.target.dataset.rating);
-        highlightStars(hoverRating);
-    }
-});
-
-starRating.addEventListener('mouseout', () => {
-    highlightStars(currentRating);
-});
-
-function highlightStars(rating) {
-    const stars = starRating.querySelectorAll('.star');
-    stars.forEach((star, index) => {
-        if (index < rating) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
+function closeModals() {
+    reviewPage.style.display = "none";
+    loginPage.style.display = "none";
+    registerPage.style.display = "none";
 }
 
-reviewForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const review = document.getElementById('review-text').value;
-    if (currentRating && review) {
-        alert(`Thank you for your review! You rated this title ${currentRating} stars.`);
-        reviewPage.style.display = 'none';
-    } else {
-        alert('Please select a rating and write a review before submitting.');
-    }
+loginLink.addEventListener("click", () => loginPage.style.display = "block");
+registerLink.addEventListener("click", () => registerPage.style.display = "block");
+document.querySelectorAll(".close-button").forEach(button => button.addEventListener("click", closeModals));
+moviesLink.addEventListener("click", () => {
+    movieGrid.style.display = "grid";
+    tvShowGrid.style.display = "none";
+    displayMovies();
 });
+tvShowsLink.addEventListener("click", () => {
+    movieGrid.style.display = "none";
+    tvShowGrid.style.display = "grid";
+    displayTVShows();
+});
+
+// Initial Load
+displayMovies();
