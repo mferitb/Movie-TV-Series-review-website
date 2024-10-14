@@ -16,32 +16,74 @@ const movies = [
     { title: "The Lord of the Rings", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
 ];
 
+const tvShows = [
+    { title: "Breaking Bad", rating: 4.9, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Game of Thrones", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Stranger Things", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
+    { title: "The Crown", rating: 4.4, image: "/placeholder.svg?height=300&width=200" },
+    { title: "The Mandalorian", rating: 4.6, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Friends", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
+    { title: "The Office", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Chernobyl", rating: 4.9, image: "/placeholder.svg?height=300&width=200" },
+    { title: "The Witcher", rating: 4.3, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Westworld", rating: 4.4, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Black Mirror", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
+    { title: "The Boys", rating: 4.6, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Peaky Blinders", rating: 4.7, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Sherlock", rating: 4.8, image: "/placeholder.svg?height=300&width=200" },
+    { title: "Narcos", rating: 4.5, image: "/placeholder.svg?height=300&width=200" },
+];
+
 const movieGrid = document.querySelector('.movie-grid');
+const tvShowGrid = document.querySelector('.tvshow-grid');
 const reviewPage = document.getElementById('review-page');
 const closeButton = document.querySelector('.close-button');
-const reviewMovieTitle = document.getElementById('review-movie-title');
-const reviewMovieRating = document.getElementById('review-movie-rating');
+const reviewTitle = document.getElementById('review-title');
+const reviewRating = document.getElementById('review-rating');
 const reviewForm = document.querySelector('.review-form');
 const starRating = document.querySelector('.star-rating');
 let currentRating = 0;
 
-movies.forEach(movie => {
-    const movieCard = document.createElement('div');
-    movieCard.className = 'movie-card';
-    movieCard.innerHTML = `
-        <img src="${movie.image}" alt="${movie.title}">
-        <div class="movie-info">
-            <div class="movie-title">${movie.title}</div>
-            <div class="movie-rating">★ ${movie.rating.toFixed(1)}</div>
+function createCard(item, type) {
+    const card = document.createElement('div');
+    card.className = type === 'movie' ? 'movie-card' : 'tvshow-card';
+    card.innerHTML = `
+        <img src="${item.image}" alt="${item.title}">
+        <div class="${type}-info">
+            <div class="${type}-title">${item.title}</div>
+            <div class="${type}-rating">★ ${item.rating.toFixed(1)}</div>
         </div>
     `;
-    movieCard.addEventListener('click', () => openReviewPage(movie));
-    movieGrid.appendChild(movieCard);
+    card.addEventListener('click', () => openReviewPage(item));
+    return card;
+}
+
+function renderCards(items, grid, type) {
+    grid.innerHTML = '';
+    items.forEach(item => {
+        const card = createCard(item, type);
+        grid.appendChild(card);
+    });
+}
+
+renderCards(movies, movieGrid, 'movie');
+renderCards(tvShows, tvShowGrid, 'tvshow');
+
+document.getElementById('movies-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    movieGrid.style.display = 'grid';
+    tvShowGrid.style.display = 'none';
 });
 
-function openReviewPage(movie) {
-    reviewMovieTitle.textContent = movie.title;
-    reviewMovieRating.textContent = `Current Rating: ★ ${movie.rating.toFixed(1)}`;
+document.getElementById('tvshows-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    movieGrid.style.display = 'none';
+    tvShowGrid.style.display = 'grid';
+});
+
+function openReviewPage(item) {
+    reviewTitle.textContent = item.title;
+    reviewRating.textContent = `Current Rating: ★ ${item.rating.toFixed(1)}`;
     reviewPage.style.display = 'block';
     resetStarRating();
 }
@@ -99,7 +141,7 @@ reviewForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const review = document.getElementById('review-text').value;
     if (currentRating && review) {
-        alert(`Thank you for your review! You rated this movie ${currentRating} stars.`);
+        alert(`Thank you for your review! You rated this title ${currentRating} stars.`);
         reviewPage.style.display = 'none';
     } else {
         alert('Please select a rating and write a review before submitting.');
