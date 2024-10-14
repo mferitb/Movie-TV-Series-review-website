@@ -101,7 +101,9 @@ body {
     color: #ffd700;
 }
 
-#review-page {
+#review-page,
+#login-page,
+#register-page {
     display: none;
     position: fixed;
     top: 0;
@@ -113,8 +115,9 @@ body {
     overflow-y: auto;
 }
 
-.review-content {
-    max-width: 800px;
+.review-content,
+.auth-content {
+    max-width: 400px;
     margin: 2rem auto;
     padding: 2rem;
     background-color: #2f2f2f;
@@ -127,22 +130,29 @@ body {
     cursor: pointer;
 }
 
-.review-form {
+.review-form,
+.auth-form {
     margin-top: 2rem;
 }
 
-.review-form textarea {
+.review-form textarea,
+.auth-form input {
     width: 100%;
-    height: 100px;
+    padding: 0.5rem;
     margin-bottom: 1rem;
+    background-color: #444;
+    border: none;
+    color: #fff;
 }
 
-.review-form button {
+.review-form button,
+.auth-form button {
     background-color: #e50914;
     color: #ffffff;
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
+    width: 100%;
 }
 
 .star-rating {
