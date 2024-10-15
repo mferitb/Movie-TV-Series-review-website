@@ -108,3 +108,77 @@ tvShowsLink.addEventListener("click", () => {
 
 // Initial Load
 displayMovies();
+// Add or modify these functions in your existing script.js file
+
+function initializeDetailPage() {
+    const selectedItem = JSON.parse(localStorage.getItem('selectedItem'));
+    if (selectedItem) {
+        document.getElementById('detail-img').src = selectedItem.image;
+        document.getElementById('detail-title').textContent = selectedItem.title;
+        document.getElementById('detail-rating').textContent = `Rating: ${selectedItem.rating}`;
+
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = star.getAttribute('data-rating');
+                updateRating(selectedItem, rating);
+            });
+        });
+
+        document.getElementById('comment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const commentText = document.getElementById('comment-text').value;
+            addComment(selectedItem, commentText);
+        });
+
+        displayComments(selectedItem);
+    }
+}
+
+function updateRating(item, rating) {
+    item.rating = (parseFloat(item.rating) + parseFloat(rating)) / 2;
+    document.getElementById('detail-rating').textContent = `Rating: ${item.rating.toFixed(1)}`;
+    localStorage.setItem('selectedItem', JSON.stringify(item));
+    updateStars(item.rating);
+}
+
+function updateStars(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < Math.floor(rating)) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function addComment(item, comment) {
+    if (!item.comments) {
+        item.comments = [];
+    }
+    item.comments.push(comment);
+    localStorage.setItem('selectedItem', JSON.stringify(item));
+    displayComments(item);
+    document.getElementById('comment-text').value = '';
+}
+
+function displayComments(item) {
+    const commentsSection = document.getElementById('comments-section');
+    commentsSection.innerHTML = '';
+    if (item.comments && item.comments.length > 0) {
+        item.comments.forEach(comment => {
+            const commentElement = document.createElement('div');
+            commentElement.classList.add('comment');
+            commentElement.textContent = comment;
+            commentsSection.appendChild(commentElement);
+        });
+    } else {
+        commentsSection.innerHTML = '<p>No comments yet. Be the first to comment!</p>';
+    }
+}
+
+// Check if we're on the detail page and initialize it
+if (window.location.pathname.includes('detail.html')) {
+    initializeDetailPage();
+}
