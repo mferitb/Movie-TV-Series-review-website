@@ -91,6 +91,13 @@ function closeModals() {
     loginPage.style.display = "none";
     registerPage.style.display = "none";
 }
+const closeButtons = document.querySelectorAll('.close-button');
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.auth-content').parentElement.style.display = 'none';
+        });
+    });
 
 loginLink.addEventListener("click", () => loginPage.style.display = "block");
 registerLink.addEventListener("click", () => registerPage.style.display = "block");
@@ -181,4 +188,126 @@ function displayComments(item) {
 // Check if we're on the detail page and initialize it
 if (window.location.pathname.includes('detail.html')) {
     initializeDetailPage();
+}
+
+let isLoggedIn = false;
+
+function toggleLoginStatus() {
+    isLoggedIn = !isLoggedIn;
+    updateNavigation();
+}
+
+function updateNavigation() {
+    if (isLoggedIn) {
+        loginLink.textContent = "Log out";
+        loginLink.removeEventListener("click", openLoginPage);
+        loginLink.addEventListener("click", handleLogout);
+        registerLink.style.display = "none";
+    } else {
+        loginLink.textContent = "Log in";
+        loginLink.removeEventListener("click", handleLogout);
+        loginLink.addEventListener("click", openLoginPage);
+        registerLink.style.display = "inline";
+    }
+}
+
+const commentForm = document.getElementById("comment-form");
+commentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (isLoggedIn) {
+        const commentText = document.getElementById("comment-text").value;
+        if (commentText.trim() !== "") {
+            addComment(commentText);
+            document.getElementById("comment-text").value = "";
+        }
+    } else {
+        alert("Yorum yapmak için giriş yapmalısınız.");
+        openLoginPage();
+    }
+});
+
+function addComment(comment) {
+    const commentsSection = document.getElementById("comments-section");
+    const commentElement = document.createElement("div");
+    commentElement.classList.add("comment");
+    commentElement.textContent = comment;
+    commentsSection.appendChild(commentElement);
+}
+
+function openLoginPage() {
+    loginPage.style.display = "block";
+}
+
+// ... (geri kalan kodlar aynı kalır)
+
+// Sayfa yüklendiğinde navigasyon durumunu güncelleyin
+updateNavigation();
+
+function initializeDetailPage() {
+    const selectedItem = JSON.parse(localStorage.getItem('selectedItem'));
+    if (selectedItem) {
+        document.getElementById('detail-img').src = selectedItem.image;
+        document.getElementById('detail-title').textContent = selectedItem.title;
+        document.getElementById('detail-rating').textContent = `Rating: ${selectedItem.rating}`;
+
+        const starContainer = document.querySelector('.star-rating');
+        const stars = starContainer.querySelectorAll('.star');
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                const rating = index + 1;
+                updateRating(selectedItem, rating);
+            });
+
+            star.addEventListener('mouseover', () => {
+                updateStarsHover(stars, index);
+            });
+
+            star.addEventListener('mouseout', () => {
+                removeStarsHover(stars);
+                updateStars(selectedItem.rating);
+            });
+        });
+
+        starContainer.addEventListener('mouseout', () => {
+            removeStarsHover(stars);
+            updateStars(selectedItem.rating);
+        });
+
+        // Mevcut derecelendirmeyi göster
+        updateStars(selectedItem.rating);
+
+        document.getElementById('comment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (isLoggedIn) {
+                const commentText = document.getElementById('comment-text').value;
+                if (commentText.trim() !== "") {
+                    addComment(selectedItem, commentText);
+                }
+            } else {
+                alert("Yorum yapmak için giriş yapmalısınız.");
+                openLoginPage();
+            }
+        });
+
+        displayComments(selectedItem);
+    }
+}
+
+function updateRating(item, rating) {
+    item.rating = rating;
+    document.getElementById('detail-rating').textContent = `Rating: ${item.rating.toFixed(1)}`;
+    localStorage.setItem('selectedItem', JSON.stringify(item));
+    updateStars(item.rating);
+}
+
+function updateStars(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < Math.floor(rating)) {
+            star.classList.add('filled');
+        } else {
+            star.classList.remove('filled');
+        }
+    });
 }
